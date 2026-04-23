@@ -1,0 +1,11 @@
+node_modules/
+vendor/
+.next/
+.env
+backend/.env
+frontend/.env.local
+*.DS_Store
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/logs/*
+__MACOSX/
