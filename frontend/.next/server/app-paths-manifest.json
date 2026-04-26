@@ -1,13 +1,5 @@
 {
   "/auth/login/page": "app/auth/login/page.js",
-  "/(dashboard)/admin/page": "app/(dashboard)/admin/page.js",
-  "/(dashboard)/admin/disputes/page": "app/(dashboard)/admin/disputes/page.js",
-  "/(dashboard)/admin/bookings/page": "app/(dashboard)/admin/bookings/page.js",
-  "/(dashboard)/admin/categories/page": "app/(dashboard)/admin/categories/page.js",
-  "/(dashboard)/provider/bookings/page": "app/(dashboard)/provider/bookings/page.js",
-  "/(dashboard)/provider/dashboard/page": "app/(dashboard)/provider/dashboard/page.js",
-  "/(dashboard)/provider/availability/page": "app/(dashboard)/provider/availability/page.js",
-  "/(dashboard)/provider/services/page": "app/(dashboard)/provider/services/page.js",
-  "/(dashboard)/provider/earnings/page": "app/(dashboard)/provider/earnings/page.js",
-  "/(dashboard)/provider/profile/page": "app/(dashboard)/provider/profile/page.js"
+  "/(public)/page": "app/(public)/page.js",
+  "/(dashboard)/admin/page": "app/(dashboard)/admin/page.js"
 }
