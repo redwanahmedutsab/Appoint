@@ -27,7 +27,7 @@ type ProfileForm  = z.infer<typeof profileSchema>;
 type PasswordForm = z.infer<typeof passwordSchema>;
 
 export default function ProfilePage() {
-  const { user, setUser } = useAuthStore();
+  const { user, updateUser } = useAuthStore();
   const [activeTab, setActiveTab] = useState<'profile' | 'password'>('profile');
 
   const { register: rp, handleSubmit: hp, formState: { errors: ep } } = useForm<ProfileForm>({
@@ -42,7 +42,7 @@ export default function ProfilePage() {
   const { mutate: saveProfile, isPending: savingProfile } = useMutation({
     mutationFn: (data: ProfileForm) => authApi.updateProfile(data),
     onSuccess: (res) => {
-      setUser(res.data.user);
+      updateUser(res.data.user);
       toast.success('Profile updated!');
     },
     onError: () => toast.error('Failed to update profile.'),

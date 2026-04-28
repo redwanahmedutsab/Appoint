@@ -20,7 +20,7 @@ const schema = z.object({
   whatsapp:        z.string().optional(),
   description:     z.string().optional(),
 });
-type FormData = z.infer<typeof schema>;
+type ProviderProfileForm = z.infer<typeof schema>;
 
 const statusStyle: Record<string, string> = {
   approved:  'bg-green-50 text-green-700 border-green-100',
@@ -45,7 +45,7 @@ export default function ProviderProfilePage() {
     queryFn: () => api.get('/neighborhoods').then(r => (r.data.neighborhoods ?? r.data.data ?? []) as Neighborhood[]),
   });
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<ProviderProfileForm>({
     resolver: zodResolver(schema),
   });
 
@@ -64,7 +64,7 @@ export default function ProviderProfilePage() {
   }, [profileRes, reset]);
 
   const { mutate: save, isPending } = useMutation({
-    mutationFn: (data: FormData) => providerApi.updateProfile(data),
+    mutationFn: (data: ProviderProfileForm) => providerApi.updateProfile(data),
     onSuccess: () => {
       toast.success('Profile updated!');
       qc.invalidateQueries({ queryKey: ['provider-profile'] });

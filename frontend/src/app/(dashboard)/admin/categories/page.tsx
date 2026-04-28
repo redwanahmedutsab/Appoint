@@ -17,7 +17,7 @@ const schema = z.object({
   description: z.string().optional(),
   sort_order:  z.coerce.number().min(0).default(0),
 });
-type FormData = z.infer<typeof schema>;
+type CategoryForm = z.infer<typeof schema>;
 
 export default function AdminCategoriesPage() {
   const [showForm, setShowForm] = useState(false);
@@ -29,7 +29,7 @@ export default function AdminCategoriesPage() {
     queryFn: () => adminApi.categories().then(r => r.data.data as ServiceCategory[]),
   });
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<CategoryForm>({
     resolver: zodResolver(schema),
   });
 
@@ -46,7 +46,7 @@ export default function AdminCategoriesPage() {
   };
 
   const { mutate: save, isPending: saving } = useMutation({
-    mutationFn: (data: FormData) =>
+    mutationFn: (data: CategoryForm) =>
       editing ? adminApi.updateCategory(editing.id, data) : adminApi.createCategory(data),
     onSuccess: () => {
       toast.success(editing ? 'Category updated!' : 'Category created!');

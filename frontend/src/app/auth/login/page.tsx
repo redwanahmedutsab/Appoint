@@ -1,5 +1,6 @@
 'use client';
 // src/app/auth/login/page.tsx
+import { Suspense } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -9,7 +10,7 @@ import { useAuthStore } from '@/store/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
-import { Eye, EyeOff, LogIn } from 'lucide-react';
+import { Eye, EyeOff, LogIn, Loader2 } from 'lucide-react';
 import { useState } from 'react';
 
 const schema = z.object({
@@ -17,20 +18,21 @@ const schema = z.object({
   password: z.string().min(1, 'Password is required'),
 });
 
-type FormData = z.infer<typeof schema>;
+type LoginForm = z.infer<typeof schema>;
 
-export default function LoginPage() {
+// ── Inner component uses useSearchParams — must be inside <Suspense> ───────
+function LoginForm() {
   const { setAuth } = useAuthStore();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [showPass, setShowPass] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginForm>({
     resolver: zodResolver(schema),
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: (data: FormData) => authApi.login(data),
+    mutationFn: (data: LoginForm) => authApi.login(data),
     onSuccess: (res) => {
       setAuth(res.data.user, res.data.token);
       toast.success(`Welcome back, ${res.data.user.name.split(' ')[0]}!`);
@@ -83,7 +85,7 @@ export default function LoginPage() {
             </div>
 
             <button type="submit" disabled={isPending} className="btn-primary btn-lg w-full justify-center mt-2">
-              <LogIn size={16} />
+              {isPending ? <Loader2 size={16} className="animate-spin" /> : <LogIn size={16} />}
               {isPending ? 'Signing in…' : 'Sign In'}
             </button>
           </form>
@@ -98,5 +100,18 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+// ── Page export wraps the form in Suspense (required by Next.js 14) ─────────
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <Loader2 size={32} className="animate-spin text-brand-600" />
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   );
 }

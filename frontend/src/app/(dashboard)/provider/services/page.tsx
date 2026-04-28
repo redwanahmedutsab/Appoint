@@ -17,7 +17,7 @@ const schema = z.object({
   price:            z.coerce.number().min(1, 'Price must be at least 1'),
   duration_minutes: z.coerce.number().min(15, 'Duration must be at least 15 min'),
 });
-type FormData = z.infer<typeof schema>;
+type ServiceForm = z.infer<typeof schema>;
 
 export default function ProviderServicesPage() {
   const [showForm, setShowForm] = useState(false);
@@ -29,7 +29,7 @@ export default function ProviderServicesPage() {
     queryFn: () => serviceApi.myServices().then(r => r.data.services as Service[]),
   });
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<ServiceForm>({
     resolver: zodResolver(schema),
   });
 
@@ -37,7 +37,7 @@ export default function ProviderServicesPage() {
   const openEdit   = (s: Service) => { reset({ name: s.name, description: s.description, price: s.price, duration_minutes: s.duration_minutes }); setEditing(s); setShowForm(true); };
 
   const { mutate: save, isPending: saving } = useMutation({
-    mutationFn: (data: FormData) =>
+    mutationFn: (data: ServiceForm) =>
       editing ? serviceApi.update(editing.id, data) : serviceApi.create(data),
     onSuccess: () => {
       toast.success(editing ? 'Service updated.' : 'Service created!');

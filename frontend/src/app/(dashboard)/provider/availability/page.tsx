@@ -22,7 +22,7 @@ const schema = z.object({
   break_start:    z.string().optional(),
   break_end:      z.string().optional(),
 });
-type FormData = z.infer<typeof schema>;
+type AvailabilityForm = z.infer<typeof schema>;
 
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -36,7 +36,7 @@ export default function ProviderAvailabilityPage() {
     queryFn: () => availabilityApi.mySlots({ from: viewDate, to: viewTo }).then(r => r.data.slots as AvailabilitySlot[]),
   });
 
-  const { register, handleSubmit, control, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, control, formState: { errors } } = useForm<AvailabilityForm>({
     resolver: zodResolver(schema),
     defaultValues: {
       from: format(new Date(), 'yyyy-MM-dd'),
@@ -49,7 +49,7 @@ export default function ProviderAvailabilityPage() {
   });
 
   const { mutate: generate, isPending } = useMutation({
-    mutationFn: (data: FormData) => availabilityApi.generate(data),
+    mutationFn: (data: AvailabilityForm) => availabilityApi.generate(data),
     onSuccess: (res) => {
       toast.success(res.data.message);
       qc.invalidateQueries({ queryKey: ['provider-slots'] });
@@ -64,7 +64,7 @@ export default function ProviderAvailabilityPage() {
 
   // Group slots by date
   const slotsByDate = slotsData?.reduce((acc: Record<string, AvailabilitySlot[]>, slot) => {
-    const d = typeof slot.date === 'string' ? slot.date : format(new Date(slot.date), 'yyyy-MM-dd');
+    const d = slot.date.slice(0, 10); // normalize to "yyyy-MM-dd" regardless of API format
     if (!acc[d]) acc[d] = [];
     acc[d].push(slot);
     return acc;

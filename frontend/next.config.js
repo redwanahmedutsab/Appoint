@@ -1,9 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '**.appointly.com.bd' },
       { protocol: 'http', hostname: 'localhost' },
+      { protocol: 'http', hostname: 'backend' },
     ],
   },
   env: {

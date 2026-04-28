@@ -20,19 +20,19 @@ const schema = z.object({
   password_confirmation: z.string(),
 }).refine(d => d.password === d.password_confirmation, { message: 'Passwords do not match', path: ['password_confirmation'] });
 
-type FormData = z.infer<typeof schema>;
+type RegisterForm = z.infer<typeof schema>;
 
 export default function RegisterPage() {
   const { setAuth } = useAuthStore();
   const router = useRouter();
   const [showPass, setShowPass] = useState(false);
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors } } = useForm<RegisterForm>({
     resolver: zodResolver(schema),
   });
 
   const { mutate, isPending } = useMutation({
-    mutationFn: (data: FormData) => authApi.register(data),
+    mutationFn: (data: RegisterForm) => authApi.register(data),
     onSuccess: (res) => {
       setAuth(res.data.user, res.data.token);
       toast.success('Account created! Welcome to Appointly 🎉');

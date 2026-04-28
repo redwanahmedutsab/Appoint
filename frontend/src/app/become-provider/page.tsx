@@ -23,7 +23,7 @@ const schema = z.object({
   whatsapp:         z.string().optional(),
   description:      z.string().min(20, 'Description must be at least 20 characters'),
 });
-type FormData = z.infer<typeof schema>;
+type BecomeProviderForm = z.infer<typeof schema>;
 
 export default function BecomeProviderPage() {
   const { isAuthenticated, user } = useAuthStore();
@@ -44,14 +44,14 @@ export default function BecomeProviderPage() {
     queryFn: () => api.get('/neighborhoods').then(r => (r.data.neighborhoods ?? r.data.data ?? []) as Neighborhood[]),
   });
 
-  const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
+  const { register, handleSubmit, formState: { errors } } = useForm<BecomeProviderForm>({
     resolver: zodResolver(schema),
   });
 
   const [submitted, setSubmitted] = useState(false);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: (data: FormData) => providerApi.becomeProvider(data),
+    mutationFn: (data: BecomeProviderForm) => providerApi.becomeProvider(data),
     onSuccess: () => setSubmitted(true),
     onError: (err: unknown) => {
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
